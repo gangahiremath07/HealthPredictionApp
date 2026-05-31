@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Patients</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-4">
+
+    <h2 class="mb-3">Patient Records</h2>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+    <a href="/" class="btn btn-outline-primary">
+        Back to Home
+    </a>
+
+    </div>
+
+    <!-- ADD BUTTON -->
+    <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addModal">
+        + Add Patient
+    </button>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+    <!-- TABLE -->
+    <table class="table table-bordered">
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>DOB</th>
+            <th>Email</th>
+            <th>Glucose</th>
+            <th>Haemoglobin</th>
+            <th>Cholesterol</th>
+            <th>Remarks</th>
+            <th>Actions</th>
+        </tr>
+
+        {% for p in patients %}
+        <tr>
+            <td>{{ "%03d"|format(p.id) }}</td>
+            <td>{{ p.full_name }}</td>
+            <td>{{ p.dob }}</td>
+            <td>{{ p.email }}</td>
+            <td>{{ p.glucose }}</td>
+            <td>{{ p.haemoglobin }}</td>
+            <td>{{ p.cholesterol }}</td>
+            <td>{{ p.remarks }}</td>
+            <td>
+                <button
+                    class="btn btn-warning btn-sm edit-btn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editModal"
+
+                    data-id="{{ p.id }}"
+                    data-name="{{ p.full_name }}"
+                    data-dob="{{ p.dob }}"
+                    data-email="{{ p.email }}"
+                    data-glucose="{{ p.glucose }}"
+                    data-haemoglobin="{{ p.haemoglobin }}"
+                    data-cholesterol="{{ p.cholesterol }}">
+                    Edit
+                </button>
+
+                <button
+                    class="btn btn-danger btn-sm delete-btn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#deleteModal"
+                    data-id="{{ p.id }}">
+                    Delete
+                </button>
+                
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+
+<!-- ADD MODAL -->
+<div class="modal fade" id="addModal">
+    <div class="modal-dialog">
+        <div class="modal-content p-3">
+
+            <h4 class="mb-3">Add Patient</h4>
+
+            <form method="POST">
+
+                <input type="text"
+                        name="full_name"
+                        class="form-control mb-2"
+                        placeholder="Patient Name"
+                        pattern="[A-Za-z ]+"
+                        oninput="this.value=this.value.replace(/[^A-Za-z ]/g,'')"
+                        required>
+
+                <input type="date"
+                       name="dob"
+                       class="form-control mb-2"
+                       required>
+
+                <input type="email"
+                       name="email"
+                       class="form-control mb-2"
+                       placeholder="Email"
+                       required>
+
+                <input type="number"
+                       name="glucose"
+                       class="form-control mb-2"
+                       placeholder="Glucose"
+                       required>
+
+                <input type="number"
+                       name="haemoglobin"
+                       class="form-control mb-2"
+                       placeholder="Haemoglobin"
+                       required>
+
+                <input type="number"
+                       name="cholesterol"
+                       class="form-control mb-2"
+                       placeholder="Cholesterol"
+                       required>
+
+                <button class="btn btn-success w-100">
+                    Save Patient
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+
+<!-- EDIT MODAL -->
+<div class="modal fade" id="editModal">
+    <div class="modal-dialog">
+        <div class="modal-content p-3">
+
+            <h4 class="mb-3">Edit Patient</h4>
+
+            <form id="editForm" method="POST">
+
+                <input id="edit_name"
+                        type="text"
+                        name="full_name"
+                        class="form-control mb-2"
+                        placeholder="Patient Name"
+                        pattern="[A-Za-z ]+"
+                        oninput="this.value=this.value.replace(/[^A-Za-z ]/g,'')"
+                        required>
+
+                <input id="edit_dob"
+                       type="date"
+                       name="dob"
+                       class="form-control mb-2"
+                       required>
+
+                <input id="edit_email"
+                       type="email"
+                       name="email"
+                       class="form-control mb-2"
+                       placeholder="Email"
+                       required>
+
+                <input id="edit_glucose"
+                       type="number"
+                       name="glucose"
+                       class="form-control mb-2"
+                       placeholder="Glucose"
+                       required>
+
+                <input id="edit_haemoglobin"
+                       type="number"
+                       name="haemoglobin"
+                       class="form-control mb-2"
+                       placeholder="Haemoglobin"
+                       required>
+
+                <input id="edit_cholesterol"
+                       type="number"
+                       name="cholesterol"
+                       class="form-control mb-2"
+                       placeholder="Cholesterol"
+                       required>
+
+                <button class="btn btn-primary w-100">
+                    Update Patient
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    Confirm Delete
+                </h5>
+            </div>
+
+            <div class="modal-body">
+                Are you sure you want to delete this patient record?
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+                    Cancel
+                </button>
+
+                <a id="confirmDeleteBtn"
+                   href="#"
+                   class="btn btn-danger">
+                    Delete
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+document.querySelectorAll(".edit-btn").forEach(button => {
+
+    button.addEventListener("click", function() {
+
+        document.getElementById("edit_name").value =
+            this.dataset.name;
+
+        document.getElementById("edit_dob").value =
+            this.dataset.dob;
+
+        document.getElementById("edit_email").value =
+            this.dataset.email;
+
+        document.getElementById("edit_glucose").value =
+            this.dataset.glucose;
+
+        document.getElementById("edit_haemoglobin").value =
+            this.dataset.haemoglobin;
+
+        document.getElementById("edit_cholesterol").value =
+            this.dataset.cholesterol;
+
+        document.getElementById("editForm").action =
+            "/edit/" + this.dataset.id;
+
+    });
+
+});
+</script>
+
+<script>
+document.querySelectorAll(".delete-btn").forEach(button => {
+
+    button.addEventListener("click", function() {
+
+        let patientId = this.dataset.id;
+
+        document.getElementById("confirmDeleteBtn").href =
+            "/delete/" + patientId;
+
+    });
+
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    setTimeout(function () {
+
+        let alerts = document.querySelectorAll(".alert");
+
+        alerts.forEach(function (alert) {
+
+            alert.classList.remove("show");
+
+            setTimeout(function () {
+                alert.remove();
+            }, 500);
+
+        });
+
+    }, 5000);
+
+});
+</script>
+
+
+
+</body>
+</html>

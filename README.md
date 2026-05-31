@@ -31,7 +31,3 @@ This project is a Health Prediction System that predicts potential health condit
 ### Others:
 - REST API integration
 - Git & GitHub version control
-
----
-
-## 📂 Project Structure
